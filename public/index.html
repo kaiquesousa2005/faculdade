@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Registar</h1>
+    <form action="/cadastrar" method="POST">
+        <input type="text" placeholder="Nome:" name="nome">
+        <input type="email" placeholder="Email:" name="email">
+        <input type="text" placeholder="Endereço:" name="endereco">
+        <button type="submit">Enviar</button>
+    </form>
+
+    <h1>Listar Usuarios</h1>
+    <button onclick="listar()">Clique aqui</button>
+
+    <div id="data-container"></div>
+
+    <div id="edit-modal" style="display: none;">
+        <h2>Editar Usuário</h2>
+        <form id="edit-form">
+            <label for="edit-nome">Nome:</label>
+            <input type="text" id="edit-nome" name="nome" required>
+            <br>
+            <label for="edit-email">Email:</label>
+            <input type="email" id="edit-email" name="email" required>
+            <br>
+            <label for="edit-endereco">Endereço:</label>
+            <input type="text" id="edit-endereco" name="endereco" required>
+            <br>
+            <button type="submit">Salvar</button>
+            <button type="button" onclick="closeEditModal()">Cancelar</button>
+        </form>
+    </div>
+    
+
+
+    <script src="script.js"></script>
+</body>
+</html>
