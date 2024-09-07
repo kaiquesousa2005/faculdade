@@ -1,25 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <title>CRUD</title>
 </head>
 <body>
-    <h1>Registar</h1>
-    <form action="/cadastrar" method="POST">
-        <input type="text" placeholder="Nome:" name="nome">
-        <input type="email" placeholder="Email:" name="email">
-        <input type="text" placeholder="Endereço:" name="endereco">
-        <button type="submit">Enviar</button>
+
+
+    <h1>Cadastrar Novo Usuário</h1>
+    <form id="cadastro-form" method="POST">
+        <input type="text" placeholder="Nome:" name="nome" id="nome"  required>
+        <input type="email" placeholder="Email:" name="email" id="email"  required>
+        <input type="text" placeholder="Endereço:" name="endereco" id="endereco"  required>
+        <div class="button-container">
+            <button type="submit">Cadastrar</button>
+        </div>
     </form>
 
-    <h1>Listar Usuarios</h1>
-    <button onclick="listar()">Clique aqui</button>
+    <div id="mensagem" style="display: none;"></div>
+
+
+    <h1>Usuários Cadastrados</h1>
+    <button onclick="listar()" id="buscar">Buscar</button>
+
 
     <div id="data-container"></div>
 
-    <div id="edit-modal" style="display: none;">
+
+
+
+    <div id="edit-modal">
         <h2>Editar Usuário</h2>
         <form id="edit-form">
             <label for="edit-nome">Nome:</label>
@@ -31,8 +43,10 @@
             <label for="edit-endereco">Endereço:</label>
             <input type="text" id="edit-endereco" name="endereco" required>
             <br>
-            <button type="submit">Salvar</button>
-            <button type="button" onclick="closeEditModal()">Cancelar</button>
+            <div class="form-button-container">
+                <button type="submit">Salvar</button>
+                <button type="button" id="cancelar" onclick="closeEditModal()">Cancelar</button>
+            </div>
         </form>
     </div>
     
