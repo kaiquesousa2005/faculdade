@@ -65,6 +65,26 @@ app.delete('/produtos/:id', async (req, res) => {
   }
 });
 
+app.put('/produtos/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { produto, quantidade, tipo, descricao } = req.body;
+
+    // Encontra o índice do produto pelo ID
+    const index = produtos.findIndex(produto => produto.id === id);
+    if (index === -1) {
+      return res.status(404).json({ error: "Produto não encontrado" });
+    }
+
+    // Atualiza os dados do produto
+    produtos[index] = { id, produto, quantidade, tipo, descricao };
+    res.status(200).json(produtos[index]);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 // Iniciando o servidor
 const port = 3000;
 app.listen(port, () => {
