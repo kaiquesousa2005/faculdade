@@ -1,38 +1,63 @@
-
-
 document.getElementById('formProduto').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  let produtos = [];  // Definida globalmente para armazenar a lista de produtos
-
   const produtoData = getFormData();
+  const form = document.getElementById('formProduto');
+  const id = form.dataset.id; // ID do produto a ser atualizado
 
   try {
-    const response = await enviarProduto(produtoData);
+    if (id) {
+      // Atualiza o produto se o ID estiver presente
+      const response = await atualizarProduto(id, produtoData);
+      if (response.ok) {
+        alert('Produto atualizado com sucesso!');
+      } else {
+        alert('Erro ao atualizar produto.');
+      }
 
-    if (response.ok) {
-      alert('Produto adicionado com sucesso!');
-      listarProdutos(); // Atualiza a lista de produtos
+      // Após a atualização, remove o ID do dataset e limpa o formulário
+      delete form.dataset.id;
+      form.reset(); // Limpa os campos do formulário
+
     } else {
-      alert('Erro ao adicionar produto.');
+      // Adiciona o produto se o ID não estiver presente
+      const response = await enviarProduto(produtoData);
+      if (response.ok) {
+        alert('Produto adicionado com sucesso!');
+      } else {
+        alert('Erro ao adicionar produto.');
+      }
     }
+
+    listarProdutos(); // Atualiza a lista de produtos
   } catch (error) {
-    console.error('Erro ao adicionar produto:', error);
+    console.error('Erro ao processar produto:', error);
   }
 });
+
+
 
 function getFormData() {
   const produto = document.getElementById('produto').value;
   const quantidade = document.getElementById('quantidade').value;
-  const tipo = document.querySelector('input[name="tipo"]:checked').value;
   const descricao = document.getElementById('descricao').value;
 
-  return { produto, quantidade, tipo, descricao };
+  return { produto, quantidade, descricao };
 }
 
 async function enviarProduto(produtoData) {
   return await fetch('http://localhost:3000/produtos', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(produtoData),
+  });
+}
+
+async function atualizarProduto(id, produtoData) {
+  return await fetch(`http://localhost:3000/produtos/${id}`, {
+    method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -55,42 +80,19 @@ async function listarProdutos() {
     produtos.forEach(produto => {
       const li = document.createElement('li');
       li.innerHTML = `
-        ${produto.produto} - ${produto.quantidade} - ${produto.tipo}
-        <button onclick="deletarProduto('${produto.id}')">Deletar</button>
-        <button onclick="prepararAtualizacao('${produto.id}')">Atualizar</button>
+        ${produto.produto} - ${produto.quantidade}
+        <button class="btn-atualizar" onclick="prepararAtualizacao('${produto.id}')">Atualizar</button>
+        <button class="btn-deletar" onclick="deletarProduto('${produto.id}')">Deletar</button>
       `;
       lista.appendChild(li);
     });
+    
   } catch (error) {
     console.error('Erro ao buscar produtos:', error);
   }
 }
 
-
-async function atualizarProduto(id) {
-  const produtoData = getFormData(); // Pega os dados do formulário
-
-  try {
-    const response = await fetch(`http://localhost:3000/produtos/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(produtoData),
-    });
-
-    if (response.ok) {
-      alert('Produto atualizado com sucesso!');
-      listarProdutos(); // Atualiza a lista de produtos
-    } else {
-      alert('Erro ao atualizar produto.');
-    }
-  } catch (error) {
-    console.error('Erro ao atualizar produto:', error);
-  }
-}
-
-function prepararAtualizacao(id) {
+async function prepararAtualizacao(id) {
   // Busca o produto pelo ID usando a lista de produtos armazenada globalmente
   const produto = produtos.find(produto => produto.id === id);
 
@@ -102,17 +104,11 @@ function prepararAtualizacao(id) {
   // Preenche o formulário com os dados do produto
   document.getElementById('produto').value = produto.produto;
   document.getElementById('quantidade').value = produto.quantidade;
-  document.querySelector(`input[name="tipo"][value="${produto.tipo}"]`).checked = true;
   document.getElementById('descricao').value = produto.descricao;
 
-  // Alterar o comportamento do botão "Adicionar" para "Atualizar"
-  document.getElementById('formProduto').onsubmit = (e) => {
-    e.preventDefault();
-    atualizarProduto(id); // Chama a função de atualização
-  };
+  // Define o ID do produto no formulário para facilitar a atualização
+  document.getElementById('formProduto').dataset.id = id;
 }
-
-
 
 async function deletarProduto(id) {
   try {
@@ -133,6 +129,3 @@ async function deletarProduto(id) {
 
 // Carrega os produtos assim que a página é carregada
 window.onload = listarProdutos;
-
-
-  console.log(`Servidor rodando em http://localhost:3000}`);

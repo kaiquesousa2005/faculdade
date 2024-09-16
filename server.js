@@ -28,9 +28,9 @@ app.get('/', (req, res) => {
 
 // Criando uma rota POST para adicionar produtos
 app.post('/produtos', async (req, res) => {
-  const { produto, quantidade, tipo, descricao } = req.body;
+  const { produto, quantidade, descricao } = req.body;
   const id = Date.now().toString();  // Adiciona um ID único baseado na data
-  const novoProduto = { id, produto, quantidade, tipo, descricao };
+  const novoProduto = { id, produto, quantidade, descricao };
   produtos.push(novoProduto);
   console.log("Adicionando produto", novoProduto);
   try {
@@ -77,7 +77,7 @@ app.put('/produtos/:id', async (req, res) => {
     }
 
     // Atualiza os dados do produto
-    produtos[index] = { id, produto, quantidade, tipo, descricao };
+    produtos[index] = { id, produto, quantidade, descricao };
     res.status(200).json(produtos[index]);
   } catch (error) {
     res.status(500).json({ error: error.message });
